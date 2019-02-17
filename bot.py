@@ -104,10 +104,11 @@ async def genseed(ctx, opponent):
         logchannel = discord.utils.get(ctx.guild.text_channels, name=result['value'])
         await logchannel.send(
             '------------------------\n'
-            'Requested seed for {user}:\n\n'
+            'Requested seed for {user} and {opponent}:\n\n'
             'Permalink: {permalink}\n'
             'File select code: [{fscode}]\n'.format(
-                user=ctx.author.name + '#' + ctx.author.discriminator,
+                user=ctx.author.mention,
+                opponent=opponent_obj.mention,
                 fscode=' | '.join(await seed.code()),
                 permalink=await seed.url()
             )
