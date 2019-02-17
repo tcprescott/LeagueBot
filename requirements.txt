@@ -1,0 +1,4 @@
+git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py
+aiohttp<3.6.0,>=3.3.0
+websockets<7.0,>=6.0
+aiosqlite==0.9.0
