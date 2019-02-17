@@ -24,6 +24,19 @@ handler = handlers.TimedRotatingFileHandler(filename='logs/discord.log', encodin
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
+def has_any_role_fromdb(configkey):
+    async def predicate(ctx):
+        lbdb = db.LeagueBotDatabase(loop)
+        await lbdb.connect()
+        result = await lbdb.get_config(ctx.guild.id, configkey)
+        if not result == None:
+            roles = result['value'].split(',')
+            await lbdb.close()
+            for role in ctx.author.roles:
+                if role.name in roles:
+                    return True
+        return False
+    return commands.check(predicate)
 
 @discordbot.event
 async def on_ready():
@@ -39,6 +52,7 @@ async def on_ready():
 
 # generate a seed
 @discordbot.command()
+@has_any_role_fromdb('racersroles')
 async def genseed(ctx):
     await ctx.message.add_reaction('⌚')
     lbdb = db.LeagueBotDatabase(loop)
@@ -89,6 +103,7 @@ async def genseed(ctx):
     await ctx.message.remove_reaction('⌚',ctx.bot.user)
 
 @discordbot.command()
+@has_any_role_fromdb('racersroles')
 async def week(ctx):
     await ctx.message.add_reaction('⌚')
     lbdb = db.LeagueBotDatabase(loop)
@@ -103,7 +118,7 @@ async def week(ctx):
 
 # configure the seed for the week and store it in the database
 @discordbot.group()
-@commands.has_any_role('admin','mods')
+@has_any_role_fromdb('adminroles')
 async def setseed(ctx):
     pass
 
@@ -199,7 +214,7 @@ async def entrance(ctx, difficulty, goal, logic, mode, shuffle, variation):
 
 # get the available seed settings
 @discordbot.command()
-@commands.has_any_role('admin','mods')
+@has_any_role_fromdb('adminroles')
 async def modes(ctx, randomizer):
     await ctx.message.add_reaction('⌚')
 
@@ -260,11 +275,16 @@ async def get(ctx, parameter):
 # @discordbot.event
 # async def on_command_error(ctx, error):
 #     if isinstance(error, commands.CheckFailure):
-#         # await ctx.message.add_reaction('🚫')
+#         await ctx.message.add_reaction('🚫')
 #         return
-#     if isinstance(error, commands.CommandNotFound):
-#         return
-#     await ctx.message.add_reaction('👎')
+#     elif isinstance(error, commands.CommandNotFound):
+#         pass
+#     elif isinstance(error, commands.errors.MissingRequiredArgument):
+#         await ctx.send(error)
+#         await ctx.message.add_reaction('👎')
+#     else:
+#         await ctx.message.add_reaction('👎')
+#     await ctx.send(error)
 #     await ctx.message.remove_reaction('⌚',ctx.bot.user)
 
 @discordbot.check
