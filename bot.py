@@ -61,6 +61,13 @@ async def genseed(ctx, opponent):
     if not re.search('^<@[0-9]*>$', opponent):
         raise Exception("opponent is not a mention")
 
+    opponent_obj = discord.utils.get(ctx.guild.members, mention = opponent)
+    for user in [ctx.author, opponent_obj]:
+        dm = user.dm_channel
+        if dm == None:
+            dm = await user.create_dm()
+        await dm.send( 'Prepaing game, please standy')
+
     lbdb = db.LeagueBotDatabase(loop)
 
     await lbdb.connect()
@@ -76,17 +83,21 @@ async def genseed(ctx, opponent):
         variation=settings['variation'],
     )
 
-    await ctx.send(
-        '------------------------\n'
-        'Requested seed for {user} and {opponent}:\n\n'
-        'Permalink: {permalink}\n'
-        'File select code: [{fscode}]\n'.format(
-            user=ctx.author.mention,
-            opponent=opponent,
-            fscode=' | '.join(await seed.code()),
-            permalink=await seed.url()
+    for user in [ctx.author, opponent_obj]:
+        dm = user.dm_channel
+        if dm == None:
+            dm = await user.create_dm()
+
+        await dm.send(
+            'Requested seed for {user} and {opponent}:\n\n'
+            'Permalink: {permalink}\n'
+            'File select code: [{fscode}]\n'.format(
+                user=ctx.author.name,
+                opponent=opponent_obj.name,
+                fscode=' | '.join(await seed.code()),
+                permalink=await seed.url()
+            )
         )
-    )
 
     result = await lbdb.get_config(ctx.guild.id, 'logchannel')
     try:
