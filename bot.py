@@ -8,6 +8,8 @@ import logging.handlers as handlers
 
 import pyz3r_asyncio
 
+import re
+
 import leaguebot.database as db
 import leaguebot.alttpr as alttpr
 
@@ -53,8 +55,12 @@ async def on_ready():
 # generate a seed
 @discordbot.command()
 @has_any_role_fromdb('racersroles')
-async def genseed(ctx):
+async def genseed(ctx, opponent):
     await ctx.message.add_reaction('⌚')
+
+    if not re.search('^<@[0-9]*>$', opponent):
+        raise Exception("opponent is not a mention")
+
     lbdb = db.LeagueBotDatabase(loop)
 
     await lbdb.connect()
@@ -72,10 +78,11 @@ async def genseed(ctx):
 
     await ctx.send(
         '------------------------\n'
-        'Requested seed for {user}:\n\n'
+        'Requested seed for {user} and {opponent}:\n\n'
         'Permalink: {permalink}\n'
         'File select code: [{fscode}]\n'.format(
-            user=ctx.author.name,
+            user=ctx.author.mention,
+            opponent=opponent,
             fscode=' | '.join(await seed.code()),
             permalink=await seed.url()
         )
@@ -272,20 +279,20 @@ async def get(ctx, parameter):
     await ctx.message.add_reaction('👍')
     await ctx.message.remove_reaction('⌚',ctx.bot.user)
 
-# @discordbot.event
-# async def on_command_error(ctx, error):
-#     if isinstance(error, commands.CheckFailure):
-#         await ctx.message.add_reaction('🚫')
-#         return
-#     elif isinstance(error, commands.CommandNotFound):
-#         pass
-#     elif isinstance(error, commands.errors.MissingRequiredArgument):
-#         await ctx.send(error)
-#         await ctx.message.add_reaction('👎')
-#     else:
-#         await ctx.message.add_reaction('👎')
-#     await ctx.send(error)
-#     await ctx.message.remove_reaction('⌚',ctx.bot.user)
+@discordbot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await ctx.message.add_reaction('🚫')
+        return
+    elif isinstance(error, commands.CommandNotFound):
+        pass
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
+        await ctx.send(error)
+        await ctx.message.add_reaction('👎')
+    else:
+        await ctx.send(error)
+        await ctx.message.add_reaction('👎')
+    await ctx.message.remove_reaction('⌚',ctx.bot.user)
 
 @discordbot.check
 async def globally_block_dms(ctx):
