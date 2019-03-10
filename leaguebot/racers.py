@@ -15,7 +15,11 @@ class Racers:
         self.bot = bot
 
     # generate a seed
-    @commands.command()
+    @commands.command(
+        help='Generate a seed for an SG race.\n\n'
+            'episodeid = speedgaming episode id',
+        brief='Generate a seed for an SG race.'
+    )
     @c.has_any_role_fromdb('racersroles')
     async def genseed(self, ctx, episodeid):
         await ctx.message.add_reaction('⌚')
@@ -95,7 +99,9 @@ class Racers:
         await ctx.message.add_reaction('👍')
         await ctx.message.remove_reaction('⌚',ctx.bot.user)
 
-    @commands.command()
+    @commands.command(
+        help='Get this week\'s seed settings.'
+    )
     @c.has_any_role_fromdb('racersroles')
     async def week(self, ctx):
         await ctx.message.add_reaction('⌚')
