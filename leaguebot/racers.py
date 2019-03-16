@@ -71,10 +71,14 @@ class Racers:
             await dm.send(
                 'Requested seed for {players}:\n\n'
                 'Permalink: {permalink}\n'
+                'SRL Goal: {srlgoal}'
                 'File select code: [{fscode}]\n'.format(
                     players=' vs. '.join(players),
                     fscode=' | '.join(await seed.code()),
-                    permalink=await seed.url()
+                    permalink=await seed.url(),
+                    srlgoal='`.setgoal ALTTPR League: {players} - Week #`'.format(
+                        players=' vs. '.join(players),
+                    )
                 )
             )
 
