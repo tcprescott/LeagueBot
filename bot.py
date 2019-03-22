@@ -34,20 +34,32 @@ async def on_ready():
     except Exception as e:
         print(e)
 
-    @discordbot.event
-    async def on_command_error(ctx, error):
-        if isinstance(error, commands.CheckFailure):
-            await ctx.message.add_reaction('🚫')
-            return
-        elif isinstance(error, commands.CommandNotFound):
-            pass
-        elif isinstance(error, commands.errors.MissingRequiredArgument):
-            await ctx.send(error)
-            await ctx.message.add_reaction('👎')
-        else:
-            await ctx.send(error)
-            await ctx.message.add_reaction('👎')
-        await ctx.message.remove_reaction('⌚',ctx.bot.user)
+@discordbot.event
+async def on_voice_state_update(member, before, after):
+    if not after.channel == None:
+        if after.channel.name in config['voice_channel_role'][member.guild.id]:
+            role = discord.utils.get(member.guild.roles, name=config['voice_channel_role'][member.guild.id][after.channel.name]['role_name'])
+            await member.add_roles(role)
+    if not before.channel == None:
+        if before.channel.name in config['voice_channel_role'][member.guild.id]:
+            role = discord.utils.get(member.guild.roles, name=config['voice_channel_role'][member.guild.id][before.channel.name]['role_name'])
+            await member.remove_roles(role)
+    return
+
+@discordbot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await ctx.message.add_reaction('🚫')
+        return
+    elif isinstance(error, commands.CommandNotFound):
+        pass
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
+        await ctx.send(error)
+        await ctx.message.add_reaction('👎')
+    else:
+        await ctx.send(error)
+        await ctx.message.add_reaction('👎')
+    await ctx.message.remove_reaction('⌚',ctx.bot.user)
 
 @discordbot.check
 async def globally_block_dms(ctx):
