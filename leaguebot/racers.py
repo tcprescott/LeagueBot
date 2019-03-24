@@ -44,7 +44,7 @@ class Racers:
             dm = u.dm_channel
             if dm == None:
                 dm = await u.create_dm()
-            await dm.send( 'Preparing game, please standy')
+            await dm.send( 'Preparing game, please standby...')
 
         loop = asyncio.get_event_loop()
 
