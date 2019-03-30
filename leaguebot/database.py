@@ -43,6 +43,12 @@ class LeagueBotDatabase():
         result = await cursor.execute(sql, (guild))
         return await cursor.fetchone()
 
+    async def get_seed_settings_by_id(self, guild, id):
+        cursor = await self.conn.cursor(aiomysql.DictCursor)
+        sql = 'SELECT * FROM seed_settings WHERE guild=%s AND id=%s'
+        result = await cursor.execute(sql, (guild, id))
+        return await cursor.fetchone()
+
     async def set_seed_settings(self, guild, randomizer, state, logic, swords, shuffle, goal, difficulty, variation):
         cursor = await self.conn.cursor()
         sql = "INSERT INTO seed_settings (guild, randomizer, state, logic, swords, shuffle, goal, difficulty, variation) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"

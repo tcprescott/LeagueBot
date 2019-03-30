@@ -21,7 +21,7 @@ class Racers:
         brief='Generate a seed for an SG race.'
     )
     @c.has_any_role_fromdb('racersroles')
-    async def genseed(self, ctx, episodeid):
+    async def genseed(self, ctx, episodeid, settingsid=None):
         await ctx.message.add_reaction('⌚')
 
         sge = await sg.find_episode(episodeid)
@@ -51,7 +51,11 @@ class Racers:
         lbdb = db.LeagueBotDatabase(loop)
 
         await lbdb.connect()
-        settings = await lbdb.get_seed_settings(ctx.guild.id)
+        if settingsid==None:
+            settings = await lbdb.get_seed_settings(ctx.guild.id)
+        else:
+            settings = await lbdb.get_seed_settings_by_id(ctx.guild.id, int(settingsid))
+
         seed = await alttpr.generate_game(
             randomizer=settings['randomizer'],
             difficulty=settings['difficulty'],
@@ -111,12 +115,15 @@ class Racers:
         help='Get this week\'s seed settings.'
     )
     @c.has_any_role_fromdb('racersroles')
-    async def week(self, ctx):
+    async def week(self, ctx, settingsid=None):
         await ctx.message.add_reaction('⌚')
         loop = asyncio.get_event_loop()
         lbdb = db.LeagueBotDatabase(loop)
         await lbdb.connect()
-        settings = await lbdb.get_seed_settings(ctx.guild.id)
+        if settingsid==None:
+            settings = await lbdb.get_seed_settings(ctx.guild.id)
+        else:
+            settings = await lbdb.get_seed_settings_by_id(ctx.guild.id, int(settingsid))
 
         await ctx.send(c.msg_settings(settings))
 
