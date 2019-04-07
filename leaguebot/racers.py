@@ -77,11 +77,11 @@ class Racers:
                 'Permalink: {permalink}\n'
                 'SRL Goal: {srlgoal}\n'
                 'File select code: [{fscode}]\n'.format(
-                    players=' vs. '.join(players),
+                    players=', '.join(players),
                     fscode=' | '.join(await seed.code()),
                     permalink=await seed.url(),
                     srlgoal='`.setgoal ALTTPR League: {players} - Week #`'.format(
-                        players=' vs. '.join(players),
+                        players=', '.join(players),
                     )
                 )
             )
@@ -95,11 +95,11 @@ class Racers:
                 'Permalink: {permalink}\n'
                 'SRL Goal: {srlgoal}\n'
                 'File select code: [{fscode}]\n'.format(
-                    players=' vs. '.join(players),
+                    players=', '.join(players),
                     fscode=' | '.join(await seed.code()),
                     permalink=await seed.url(),
                     srlgoal='`.setgoal ALTTPR League: {players} - Week #`'.format(
-                        players=' vs. '.join(players),
+                        players=', '.join(players),
                     )
                 )
             )
