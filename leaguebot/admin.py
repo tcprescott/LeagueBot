@@ -5,7 +5,7 @@ import asyncio
 import leaguebot.database as db
 import leaguebot.common as c
 
-class Admin:
+class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

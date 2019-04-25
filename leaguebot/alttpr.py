@@ -39,6 +39,12 @@ async def generate_game(randomizer, state, logic, goal, difficulty, variation, s
         )
     return seed
 
+async def retrieve_game(hash):
+    seed = await pyz3r_asyncio.create_seed(
+        hash=hash
+    )
+    return seed
+
 async def list_game_settings(randomizer):
     seed = await pyz3r_asyncio.create_seed(randomizer=randomizer)
     settings = await seed.list_settings()

@@ -7,7 +7,7 @@ import leaguebot.database as db
 import leaguebot.alttpr as alttpr
 import leaguebot.common as c
 
-class Moderators:
+class Moderators(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
