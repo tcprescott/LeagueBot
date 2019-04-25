@@ -134,13 +134,13 @@ class Racers(commands.Cog):
         participants.append(ctx.author.name + '#' + ctx.author.discriminator)
         participants = list(set(participants))
 
-        # for user in participants:
-        #     u = ctx.guild.get_member_named(user)
+        for user in participants:
+            u = ctx.guild.get_member_named(user)
             
-        #     dm = u.dm_channel
-        #     if dm == None:
-        #         dm = await u.create_dm()
-        #     await dm.send( 'Preparing game, please standby...')
+            dm = u.dm_channel
+            if dm == None:
+                dm = await u.create_dm()
+            await dm.send( 'Preparing game, please standby...')
 
         loop = asyncio.get_event_loop()
 
@@ -180,25 +180,25 @@ class Racers(commands.Cog):
             await ctx.message.add_reaction('👎')
             return
 
-        # for user in participants:
-        #     u = ctx.guild.get_member_named(user)
-        #     dm = u.dm_channel
-        #     if dm == None:
-        #         dm = await u.create_dm()
-        #     await dm.send(
-        #         'Requested seed for {players}:\n\n'
-        #         'Permalink: {permalink}\n'
-        #         'SRL Goal: {srlgoal}\n'
-        #         'File select code: [{fscode}]\n'.format(
-        #             players=', '.join(players),
-        #             fscode=' | '.join(await seed.code()),
-        #             permalink=await seed.url(),
-        #             srlgoal='`.setgoal ALTTPR League: {players} - Game {gamenum}`'.format(
-        #                 players=', '.join(players),
-        #                 gamenum=gamenum
-        #             )
-        #         )
-        #     )
+        for user in participants:
+            u = ctx.guild.get_member_named(user)
+            dm = u.dm_channel
+            if dm == None:
+                dm = await u.create_dm()
+            await dm.send(
+                'Requested seed for {players}:\n\n'
+                'Permalink: {permalink}\n'
+                'SRL Goal: {srlgoal}\n'
+                'File select code: [{fscode}]\n'.format(
+                    players=', '.join(players),
+                    fscode=' | '.join(await seed.code()),
+                    permalink=await seed.url(),
+                    srlgoal='`.setgoal ALTTPR League: {players} - Game {gamenum}`'.format(
+                        players=', '.join(players),
+                        gamenum=gamenum
+                    )
+                )
+            )
 
         result = await lbdb.get_config(ctx.guild.id, 'logchannel')
         try:
