@@ -166,17 +166,16 @@ class Racers(commands.Cog):
                 swords='randomized',
                 variation='none',
             )
-        elif gamenum == '3':
+        elif gamenum in ['3','4','5']:
             seed = await alttpr.retrieve_game(
                 hash=hash
             )
-            print(seed)
             if not seed.patchdata['spoiler']['meta']['tournament'] == True:
                 await ctx.send('That is not a Race Rom.  Please generate a new game.')
                 await ctx.message.add_reaction('👎')
                 return
         else:
-            await ctx.send('Specify a game number (1, 2, or 3)')
+            await ctx.send('Specify a game number (1 to 5)')
             await ctx.message.add_reaction('👎')
             return
 
